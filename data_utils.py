@@ -48,7 +48,9 @@ class TextAudioLoader(torch.utils.data.Dataset):
 
         audiopaths_and_text_new = []
         lengths = []
-        for audiopath, text in self.audiopaths_and_text:
+        for item in self.audiopaths_and_text:
+            audiopath = item[0]
+            text=item[1]
             if self.min_text_len <= len(text) and len(text) <= self.max_text_len:
                 audiopaths_and_text_new.append([audiopath, text])
                 lengths.append(os.path.getsize(audiopath) // (2 * self.hop_length))
@@ -351,7 +353,6 @@ class DistributedBucketSampler(torch.utils.data.distributed.DistributedSampler):
       # deterministically shuffle based on epoch
       g = torch.Generator()
       g.manual_seed(self.epoch)
-  
       indices = []
       if self.shuffle:
           for bucket in self.buckets:
@@ -359,7 +360,7 @@ class DistributedBucketSampler(torch.utils.data.distributed.DistributedSampler):
       else:
           for bucket in self.buckets:
               indices.append(list(range(len(bucket))))
-  
+
       batches = []
       for i in range(len(self.buckets)):
           bucket = self.buckets[i]
@@ -369,6 +370,8 @@ class DistributedBucketSampler(torch.utils.data.distributed.DistributedSampler):
   
           # add extra samples to make it evenly divisible
           rem = num_samples_bucket - len_bucket
+          #[]00 buckets[[]]
+
           ids_bucket = ids_bucket + ids_bucket * (rem // len_bucket) + ids_bucket[:(rem % len_bucket)]
   
           # subsample

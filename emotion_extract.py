@@ -8,7 +8,7 @@ from transformers.models.wav2vec2.modeling_wav2vec2 import (
 import os
 import librosa
 import numpy as np
-
+import chardet
 
 class RegressionHead(nn.Module):
     r"""Classification head."""
@@ -71,6 +71,7 @@ def process_func(
     # run through processor to normalize signal
     # always returns a batch, so we just get the first entry
     # then we put it on the device
+    print('sampling_rate%s'%sampling_rate)
     y = processor(x, sampling_rate=sampling_rate)
     y = y['input_values'][0]
     y = torch.from_numpy(y).to(device)
@@ -99,7 +100,7 @@ wavnames = []
 def extract_dir(path):
     rootpath = path
     for idx, wavname in enumerate(os.listdir(rootpath)):
-        wav, sr = librosa.load(f"{rootpath}/{wavname}", 16000)
+        wav, sr = librosa.load(f"{rootpath}/{wavname}")
         emb = process_func(np.expand_dims(wav, 0), sr, embeddings=True)
         embs.append(emb)
         wavnames.append(wavname)
@@ -108,13 +109,13 @@ def extract_dir(path):
 
 
 def extract_wav(path):
-    wav, sr = librosa.load(path, 16000)
+    wav, sr = librosa.load(path) #, 16000)
     emb = process_func(np.expand_dims(wav, 0), sr, embeddings=True)
     return emb
 
 
-def preprocess_one(path):
-    wav, sr = librosa.load(path, 16000)
+def preprocess_one(path): 
+    wav, sr = librosa.load(path,sr = 16000)
     emb = process_func(np.expand_dims(wav, 0), sr, embeddings=True)
     np.save(f"{path}.emo.npy", emb.squeeze(0))
     return emb
@@ -129,7 +130,7 @@ if __name__ == '__main__':
 
     for filelist in args.filelists:
         print(filelist,"----start emotion extract-------")
-        with open(filelist) as f:
+        with open(filelist,encoding='utf-8') as f:
             for idx, line in enumerate(f.readlines()):
                 path = line.strip().split("|")[0]
                 preprocess_one(path)

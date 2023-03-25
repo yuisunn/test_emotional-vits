@@ -19,11 +19,11 @@ _punctuation = ',.!?…~'
 _letters = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㄲㄸㅃㅆㅉㅏㅓㅗㅜㅡㅣㅐㅔ '
 '''
 
-'''# chinese_cleaners
+# chinese_cleaners
 _pad        = '_'
 _punctuation = '，。！？—…'
 _letters = 'ㄅㄆㄇㄈㄉㄊㄋㄌㄍㄎㄏㄐㄑㄒㄓㄔㄕㄖㄗㄘㄙㄚㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦㄧㄨㄩˉˊˇˋ˙ '
-'''
+
 
 
 '''# sanskrit_cleaners
